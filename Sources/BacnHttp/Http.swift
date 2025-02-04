@@ -131,6 +131,7 @@ public class BaconRouteProvider {
         var processedRoutes = [String: BaconRoute]()
 
         for (_, route) in dest.routes {
+            print("Registered route for:\(route.method)\(path)\(route.path)")
             processedRoutes["\(route.method)\(path)\(route.path)"] = route
         }
         return processedRoutes
