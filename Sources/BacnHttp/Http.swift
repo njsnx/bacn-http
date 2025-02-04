@@ -9,7 +9,7 @@ import AWSLambdaEvents
 import AWSLambdaRuntime
 import Foundation
 import HTTPTypes
-
+import Logging
 public protocol BaconAwsRequest {}
 
 public struct BaconRequest {
@@ -69,6 +69,7 @@ public protocol BaconRoutes {
 public protocol BaconContent: Codable, Sendable {}
 
 public class BaconRouteProvider {
+    var logger: Logger = Logger(label: "bacn-http")
     var app: BaconApplication?
     var children = [String: BaconRouteProvider]()
     var parent: BaconRouteProvider?
@@ -149,7 +150,9 @@ public class BaconRouteProvider {
         var combinedRoutes: [String: BaconRoute] = processParentPath(dest: self)
 
         combinedRoutes.merge(loopChildren(children)) { _, current in current }
+        
         for route in combinedRoutes.keys {
+            logger.info(Logger.Message(stringLiteral: route))
             if let pathParameters = matchRoute(
                 route,
                 with: method.rawValue + "/" + path + "/"
